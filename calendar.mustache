@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>기본 FullCalendar</title>
+
+    <!-- FullCalendar CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/rrule@2.6.8/dist/es5/rrule.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/rrule@6.1.8/index.global.min.js"></script>
+
+    <div style="max-width: 900px; margin: 0 auto;">
+        <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 10px; gap: 12px;">
+            <div id="total-wage" style="font-weight: normal; font-size: 1.2em;">
+                100,000원
+            </div>
+            <button id="new-work-btn"
+                    onclick="location.href='/calendar/new'"
+                    style="
+                    padding: 8px 16px;
+                    font-size: 1em;
+                    background-color: #1d466c;
+                    color: white;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                ">
+                새 근무 등록하기
+            </button>
+        </div>
+
+    <div id="calendar"></div>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #calendar {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+    </style>
+    </div>
+</head>
+<body>
+
+<div id="calendar"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const calendarEl = document.getElementById('calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'ko',
+            events: '/events',  //Spring에서 계산된 결과 불러옴
+
+            dateClick: function(info) {
+                const clickedDate = info.dateStr; // 예: "2025-05-19"
+                window.location.href = `/calendar/${clickedDate}`;
+            },
+
+            dayCellDidMount: function(info) {
+                const day = info.date.getDay();
+                if (day === 0) {
+                    info.el.style.color = 'red';
+                } else if (day === 6) {
+                    info.el.style.color = 'blue';
+                }
+            }
+        });
+
+        calendar.render();
+
+        loadEventsFromStorage(calendar);
+    });
+</script>
+
+</body>
+</html>
